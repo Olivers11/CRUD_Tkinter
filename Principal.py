@@ -71,17 +71,46 @@ class App:
 
 
 	def getRow(self, event):
+		na = StringVar()
+		ed = StringVar()
+		ca = StringVar()
 		rowName = self.list_elemts.identify_row(event.y)
 		item = self.list_elemts.item(self.list_elemts.focus())
 		n = item['values'][0]
 		e = item['values'][1]
 		c = item['values'][2]
+		na.set(n)
+		ed.set(e)
+		ca.set(c)
 		pop = Toplevel(self.frame)
 		pop.geometry("400x200")
-		lbl_n = Label(pop, text=n).place(x=40, y = 40)
-		lbl_e = Label(pop, text=e).place(x=40, y = 80)
-		lbl_c = Label(pop, text=c).place(x=40, y = 120)
-		btn_change = Button(pop, text="Cambiar", relief="flat", background="#00CE54", foreground="white").place(x=270, y=160, width=90)
+		lbl_n = Entry(pop, textvariable=na).place(x=40, y = 40)
+		lbl_e = Entry(pop, textvariable=ed).place(x=40, y = 80)
+		lbl_c = Entry(pop, textvariable=ca).place(x=40, y = 120)
+		btn_change = Button(pop, text="Actualizar", relief="flat", background="#00CE54", foreground="white", command= lambda:self.editar(n, na.get(), ed.get(), ca.get())).place(x=180, y=160, width=90)
+		btn_delete = Button(pop, text="Eliminar", relief="flat", background="red", foreground="white", command= lambda:self.eliminar(n)).place(x=290, y=160, width=90)
+
+
+
+	def eliminar(self, n):
+		d = Data()
+		d.Delete(n)
+		messagebox.showinfo(title="Actualizacion", message="Se han actualizado los datos")
+		self.ClearList()
+		self.DrawList()
+		self.ClearEntry()
+
+
+
+	def editar(self, n, na, ed, ca):
+		arr = [na, ed, ca]
+		d = Data()
+		d.UpdateItem(arr, n)
+		messagebox.showinfo(title="Actualizacion", message="Se han actualizado los datos")
+		self.ClearList()
+		self.DrawList()
+		self.ClearEntry()
+
 
 
 
@@ -99,13 +128,17 @@ class App:
 
 	
 	def confirmProcess(self):
-		d = Data()
-		arr = [self.name.get(), self.age.get(), self.carrer.get()]
-		d.InsertItems(arr)
-		messagebox.showinfo(title="Alerta", message="Se inserto correctamente!")
-		self.ClearList()
-		self.DrawList()
-		self.ClearEntry()
+		if self.name.get() != "" and self.age.get() != "" and self.carrer.get() != "":
+			d = Data()
+			arr = [self.name.get(), self.age.get(), self.carrer.get()]
+			d.InsertItems(arr)
+			messagebox.showinfo(title="Alerta", message="Se inserto correctamente!")
+			self.ClearList()
+			self.DrawList()
+			self.ClearEntry()
+		else:
+			messagebox.showinfo(title="Error", message="Debe llenar los campos para poder guardar!")
+				
 
 		
 
